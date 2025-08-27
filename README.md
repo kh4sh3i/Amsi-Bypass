@@ -603,7 +603,9 @@ nslookup -type=srv _ldap._tcp.dc._msdcs.sevenkingdoms.local 192.168.56.10
 
 # 6. password spray
 ```
-Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate | Select-Object Name, SamAccountName, EmailAddress, Enabled, LastLogonDate | Export-Csv -Path "C:\ADUsers.csv" -NoTypeInformation -Encoding UTF8
+Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate |
+    Select-Object Name, SamAccountName, EmailAddress, Enabled, LastLogonDate |
+    Export-Csv -Path "$env:USERPROFILE\Desktop\ADUsers.csv" -NoTypeInformation -Encoding UTF8
 
 ```
 
