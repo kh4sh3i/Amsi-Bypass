@@ -613,7 +613,7 @@ Get-ADUser -Filter 'Enabled -eq $true' |
 
 ```
 
-# 6.1 Do not require Kerberos preauthentication (AS-REP roasting)
+## 6.1 Do not require Kerberos preauthentication (AS-REP roasting)
 ```powershell
 Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcontrol:1.2.840.113556.1.4.803:=4194304))" | Format-Table Name, DistinguishedName
 ```
