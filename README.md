@@ -607,10 +607,9 @@ Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate |
     Select-Object Name, SamAccountName, EmailAddress, Enabled, LastLogonDate |
     Export-Csv -Path "$env:USERPROFILE\Desktop\ADUsers.csv" -NoTypeInformation -Encoding UTF8
 
-
-Get-ADUser -Filter 'Enabled -eq $true'  |
-    Select-Object  SamAccountName |
-    Export-Csv -Path "$env:USERPROFILE\Desktop\Enabled_ADUsers.csv" -NoTypeInformation -UseQuotes Never -Encoding UTF8
+Get-ADUser -Filter 'Enabled -eq $true' |
+    Select-Object -ExpandProperty SamAccountName |
+    Out-File "$env:USERPROFILE\Desktop\Enabled_ADUsers.txt" -Encoding UTF8
 
 ```
 
