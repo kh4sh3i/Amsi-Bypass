@@ -610,7 +610,7 @@ Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate |
 
 Get-ADUser -Filter 'Enabled -eq $true'  |
     Select-Object  SamAccountName |
-    Export-Csv -Path "$env:USERPROFILE\Desktop\Enabled_ADUsers.csv" -NoTypeInformation -Encoding UTF8
+    Export-Csv -Path "$env:USERPROFILE\Desktop\Enabled_ADUsers.csv" -NoTypeInformation -UseQuotes Never -Encoding UTF8
 
 ```
 
