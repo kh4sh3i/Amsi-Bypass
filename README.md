@@ -613,6 +613,13 @@ Get-ADUser -Filter 'Enabled -eq $true' |
 
 ```
 
+# Do not require Kerberos preauthentication
+```powershell
+Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcontrol:1.2.840.113556.1.4.803:=4194304))" | Format-Table Name, DistinguishedName
+```
+
+
+
 ### Refrences
 * [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
 * [winPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS/winPEASexe)
