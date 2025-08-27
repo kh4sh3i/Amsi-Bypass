@@ -1,10 +1,10 @@
-function idp{
+function dpspray{
     <#
     .SYNOPSIS
 
     This module performs a password spray attack against users of a domain. By default it will automatically generate the userlist from the domain. Be careful not to lockout any accounts.
 
-    DomainPasswordSpray Function: idp
+    DomainPasswordSpray Function: dpspray
     Author: Beau Bullock (@dafthack) and Brian Fehrman (@fullmetalcache)
     License: BSD 3-Clause
     Required Dependencies: None
@@ -56,7 +56,7 @@ function idp{
 
     .EXAMPLE
 
-    C:\PS> idp -Password Winter2016
+    C:\PS> dpspray -Password Winter2016
 
     Description
     -----------
@@ -64,7 +64,7 @@ function idp{
 
     .EXAMPLE
 
-    C:\PS> idp -UserList users.txt -Domain domain-name -PasswordList passlist.txt -OutFile sprayed-creds.txt
+    C:\PS> dpspray -UserList users.txt -Domain domain-name -PasswordList passlist.txt -OutFile sprayed-creds.txt
 
     Description
     -----------
@@ -72,7 +72,7 @@ function idp{
 
     .EXAMPLE
 
-    C:\PS> idp -UsernameAsPassword -OutFile valid-creds.txt
+    C:\PS> dpspray -UsernameAsPassword -OutFile valid-creds.txt
 
     Description
     -----------
