@@ -657,7 +657,7 @@ GetUserSPNs.py -request -dc-ip 192.168.56.11 north.sevenkingdoms.local/hodor:hod
 Get-NetUser -SPN | Select-Object SamAccountName, ServicePrincipalName
 
 # Computers with SPNs
-Get-NetComputer -SPN | Select-Object Name, ServicePrincipalName
+Get-NetComputer | Select-Object Name, ServicePrincipalName
 ```
 
 
