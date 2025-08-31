@@ -677,6 +677,11 @@ Invoke-BloodHound -CollectionMethod All -Domain yourdomain.local
 
 ```
 
+### TIPS:
+* we should install bloodhound on kali not with docker because we can not import custom query
+* [custome query](https://github.com/SpecterOps/BloodHoundQueryLibrary/blob/main/Queries.json)
+* find all vuln from bloodhound via : [bloodhound-quickwin](https://github.com/kaluche/bloodhound-quickwin)
+
 
 ### Refrences
 * [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
